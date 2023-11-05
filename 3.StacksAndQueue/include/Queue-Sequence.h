@@ -1,45 +1,45 @@
 #ifndef QUEUE_SEQUENCE_H
 #define QUEUE_SEQUENCE_H
 
-#include "Status.h"
+
+#include <stdbool.h>
 
 // Max size of a queue
-#define MAXQSIZE 1000 
+#define MAXQSIZE 256
 
 // Element type of queue
 typedef int ElemType;
 
-// 循环队列的顺序存储结构
 typedef struct {
-    ElemType* base; // 动态分配存储空间
+    ElemType* data; 
     int front;      // head pointer, if queue is not empty, point to the head element
     int rear;       // rear pointer, if queue is not empty, point to the next idx of the last element
+    int capacity;
 } SqQueue;
 
-Status printQueue(SqQueue Queue);
+void printQueue(SqQueue Queue);
 
 // 1. Initialization
-Status initQueue(SqQueue *pQueue);
+void initQueue(SqQueue *pQueue);
 
-// 2. Get the length of the queue
-int queueLength(SqQueue Queue);
+// 2. Get the size of the queue
+int size(SqQueue Queue);
 
 // 3. Enter queue
-Status enQueue(SqQueue *pQueue, ElemType elem);
+void push(SqQueue *pQueue, ElemType elem);
 
 // 4. Left Queue
-Status deQueue(SqQueue *pQueue, ElemType *pElem);
+ElemType pop(SqQueue *pQueue, ElemType *pElem);
 
-// 5. Get the head element
-Status getHead(SqQueue Queue, ElemType *pElem);
+// 5. Determines whether the queue is empty
+bool empty(SqQueue Queue);
 
-// 6. Determines whether the queue is empty
-Status isEmpty(SqQueue Queue);
+// 6. Clear the queue
+void clear(SqQueue *pQueue);
 
-// 7. Clear the queue
-Status clear(SqQueue *pQueue);
+// 7. Destroy the queue
+void destroy(SqQueue *pQueue);
 
-// 8. Destroy the queue
-Status destroy(SqQueue *pQueue);
+
 
 #endif // QUEUE_SEQUENCE_H

@@ -1,11 +1,11 @@
 
-# MAIN := Examples/main.c
-MAIN := Examples/test.c
+MAIN := Examples/main.c
+
 TARGET := $(notdir $(basename $(MAIN)))
 
 
 # h_files := include/Building.h include/Utils.h include/OptimumRouteAlgorithm.h
-h_files := include/test.h
+h_files := include/Test.h
 
 c_srcs := $(patsubst include/%.h,src/%.c,$(h_files))
 c_objs := $(patsubst src/%.c,objs/%.o,$(c_srcs))
@@ -44,6 +44,8 @@ run : workspace/$(TARGET).exe
 
 debug :
 	@echo $(c_srcs)
+	@echo $(c_objs)
+
 
 clean :
 	@rm -rf objs lib workspace/*.exe

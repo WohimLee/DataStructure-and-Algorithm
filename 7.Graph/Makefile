@@ -1,6 +1,6 @@
 
-MAIN := Examples/example2.c
-HEADERS := 
+MAIN := Examples/example1.c
+HEADERS := include/adjacencyList.h
 # MAIN := Examples/test.c
 
 TARGET := $(notdir $(basename $(MAIN)))

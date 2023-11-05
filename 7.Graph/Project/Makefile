@@ -1,10 +1,13 @@
 
-MAIN := Examples/example2.c
-# MAIN := Examples/test.c
-
+# MAIN := Examples/main.c
+MAIN := Examples/test.c
 TARGET := $(notdir $(basename $(MAIN)))
 
-c_srcs := $(shell find src -name "*.c")
+
+# h_files := include/Building.h include/Utils.h include/OptimumRouteAlgorithm.h
+h_files := include/test.h
+
+c_srcs := $(patsubst include/%.h,src/%.c,$(h_files))
 c_objs := $(patsubst src/%.c,objs/%.o,$(c_srcs))
 
 include_dirs := include
@@ -13,30 +16,36 @@ linking_libs := m
 I_options := $(include_dirs:%=-I%)
 l_options := $(linking_libs:%=-l%)
 
-compile_options := -g $(I_options)
+compile_options := -g -O0 -gdwarf-2 $(I_options)
 linking_options := $(l_options)
 
 
 # Compile TARGET
 objs/$(TARGET).o : $(MAIN) 
-	@echo [INFO]: Compile $^ to $@
+	@echo [INFO]: Compile $< to $@
+	@mkdir -p $(dir $@)
+	@gcc -c $< -o $@ $(compile_options)
+
+# Compile srcs
+objs/%.o : src/%.c $(h_files)
+	@echo [INFO]: Compile $< to $@
 	@mkdir -p $(dir $@)
 	@gcc -c $< -o $@ $(compile_options)
 
 
-workspace/$(TARGET) : objs/$(TARGET).o 
+workspace/$(TARGET).exe : objs/$(TARGET).o $(c_objs)
 	@echo [INFO]: Linking $^ to $@
 	@mkdir -p $(dir $@)
 	@gcc $^ -o $@ $(linking_options)
 
-run : workspace/$(TARGET)
+run : workspace/$(TARGET).exe
 	@./$<
 
 
 debug :
-	@echo $(TARGET)
+	@echo $(c_srcs)
 
 clean :
-	@rm -rf objs lib workspace/$(TARGET)
+	@rm -rf objs lib workspace/*.exe
 
 .PHONY : debug clean run

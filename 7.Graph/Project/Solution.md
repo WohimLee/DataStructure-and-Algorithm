@@ -3,17 +3,151 @@
 
 ## Graph Construction
 >Lifts
-- Lift1 connects to Lift2, Lobby1, and Charger.
-- Lift2 connects to Lift1, Lift3, and Lobby2.
-- Lift3 connects to Lift2 and Lobby3.
+- Lift-1 connects to Lobby-1, Lift-2, 
+- Lift-2 connects to Lobby-2 and Lift-1, Lift-3, and Charger
+- Lift-3 connects to Lobby-3 and Lift-2
+
+<div align=center>
+    <img src="imgs/img1.png" width=400>
+</div>
 
 >Lobbies
-- Each `LobbyX` (where X is the floor number) connects to all `reception rooms` on that floor and its respective `lift`.
+- Each `LobbyX` (where X is the floor number) connects to all `reception rooms` on that floor and its respective `lift`
+<div align=center>
+    <img src="imgs/img2.png" width=250>
+</div>
 
 >Reception Rooms
 - `DX.Y.1` connects to its paired office DX.Y.2 and LobbyX.
     - X is the floor number 
     - Y is the office-reception pair number
 
+<div align=center>
+    <img src="imgs/img3.png" width=150>
+</div>
+
 >Offices
 - DX.Y.2 connects only to its paired reception room DX.Y.1
+
+<div align=center>
+    <img src="imgs/img4.png" width=600>
+</div>
+
+
+>Numbers of Nodes
+- Total: 79
+    - Each Floor: 26
+        - Lift: 1
+        - Lobby: 1
+        - Reception Rooms: 12
+        - Offices: 12
+    - Charging Room: 1
+
+```c++
+// lift*3 + lobbies*3 + reception room*3*12 + office*3*12 + charging room*1
+```
+
+>Index of each room type
+- Lift: i % 26 == 0
+- Lobby: i % 26 == 1
+- Reception Room: i % 26 == 2
+- Office: i % 26 == 
+- 78
+
+
+>ArcNode
+
+
+>VertexNode
+
+
+
+>Node Structure
+- Node ID: 
+- Node Idx: 每个 Node 的编号, e.g. 0, 1, 2, 3, ..., 总数
+- Node Description: Lift, Lobby, Reception Room, Office, Charging Room
+- Next: 指针, 指向连通的 Node
+
+
+|Node Idx|Room Type|Description|First Arc|Other Arcs|
+|:--|:--|:--|:--|:--|
+0|Lift| Lift-1|1 | 26|
+1|Lobby|Lobby-1|0|2,3,4,5,6,7,8,9,10,11,12,13|
+2|Reception Room|A1.1|14
+3|Reception Room|B1.1|15
+4|Reception Room|C1.1|16
+5|Reception Room|D1.1|17
+6|Reception Room|E1.1|18
+7|Reception Room|F1.1|19
+8|Reception Room|G1.1|20
+9|Reception Room|H1.1|21
+10|Reception Room|K1.1|22
+11|Reception Room|L1.1|23
+12|Reception Room|M1.1|24
+13|Reception Room|N1.1|25
+14|Office|A1.2|2
+15|Office|B1.2|3
+16|Office|C1.2|4
+17|Office|D1.2|5
+18|Office|E1.2|6
+19|Office|F1.2|7
+20|Office|G1.2|8
+21|Office|H1.2|9
+22|Office|K1.2|10
+23|Office|L1.2|11
+24|Office|M1.2|12
+25|Office|N1.2|13
+26|Lift|Lift-2|27|52,78
+27|Lobby|Lobby-2|26|28,29,30,31,32,33,34,35,36,37,38,39
+28|Reception Room|A2.1|40
+29|Reception Room|B2.1|41
+30|Reception Room|C2.1|42
+31|Reception Room|D2.1|43
+32|Reception Room|E2.1|44
+33|Reception Room|F2.1|45
+34|Reception Room|G2.1|46
+35|Reception Room|H2.1|47
+36|Reception Room|K2.1|48
+37|Reception Room|L2.1|49
+38|Reception Room|M2.1|50
+39|Reception Room|N2.1|51
+40|Office|A2.2|28
+41|Office|B2.2|29
+42|Office|C2.2|30
+43|Office|D2.2|31
+44|Office|E2.2|32
+45|Office|F2.2|33
+46|Office|G2.2|34
+47|Office|H2.2|35
+48|Office|K2.2|36
+49|Office|L2.2|37
+50|Office|M2.2|38
+51|Office|N2.2|39
+52|Lift|Lift-3|53|26
+53|Lobby|Lobby-3|52|54,55,56,57,58,59,60,61,62,63,64,65
+54|Reception Room|A3.1|66
+55|Reception Room|B3.1|67
+56|Reception Room|C3.1|68
+57|Reception Room|D3.1|69
+58|Reception Room|E3.1|70
+59|Reception Room|F3.1|71
+60|Reception Room|G3.1|72
+61|Reception Room|H3.1|73
+62|Reception Room|K3.1|74
+63|Reception Room|L3.1|75
+64|Reception Room|M3.1|76
+65|Reception Room|N3.1|77
+66|Office|A3.2|54
+67|Office|B3.2|55
+68|Office|C3.2|56
+69|Office|D3.2|57
+70|Office|E3.2|58
+71|Office|F3.2|59
+72|Office|G3.2|60
+73|Office|H3.2|61
+74|Office|K3.2|62
+75|Office|L3.2|63
+76|Office|M3.2|64
+77|Office|N3.2|65
+78|Charger Room|Charger|26
+

@@ -5,6 +5,7 @@
 .DS_Store
 exec
 *.so
+*.exe
 
 # Folders
 objs

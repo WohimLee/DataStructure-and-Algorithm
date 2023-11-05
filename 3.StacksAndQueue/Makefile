@@ -1,43 +1,51 @@
 
-src_files  := main 6.3_Expression # 1_SqStack
-src_folder := src
-
-c_srcs := $(src_files:%=$(src_folder)/%.c)
-c_objs := $(patsubst $(src_folder)/%.c,objs/%.o,$(c_srcs))
-
-include_paths  := /datav/shared/Education/2_Cpp/5_DataStructureAndAlgorithm/2_StacksAndQueue/
-library_paths  := 
-link_libraries := 
+# MAIN := Examples/main.c
+MAIN := Examples/test.c
+TARGET := $(notdir $(basename $(MAIN)))
 
 
-I_options := $(include_paths:%=-I%)
-l_options := $(link_libraries:%=l%)
-L_options := $(library_paths:%=L%)
-r_options := $(library_paths:%=-Wl,-rpath=%)
-# -fno-stack-protector
-compile_options := -g -O3 -w ${I_options}
-linking_options := ${l_options} ${L_options} ${r_options}
+# h_files := include/Building.h include/Utils.h include/OptimumRouteAlgorithm.h
+h_files := include/test.h
 
-objs/%.o : $(src_folder)/%.c
-	@echo Compile $^
+c_srcs := $(patsubst include/%.h,src/%.c,$(h_files))
+c_objs := $(patsubst src/%.c,objs/%.o,$(c_srcs))
+
+include_dirs := include
+linking_libs := m
+
+I_options := $(include_dirs:%=-I%)
+l_options := $(linking_libs:%=-l%)
+
+compile_options := -g -O0 -gdwarf-2 $(I_options)
+linking_options := $(l_options)
+
+
+# Compile TARGET
+objs/$(TARGET).o : $(MAIN) 
+	@echo [INFO]: Compile $< to $@
 	@mkdir -p $(dir $@)
-	@gcc -c $^ -o $@ $(compile_options)
+	@gcc -c $< -o $@ $(compile_options)
 
-workspace/exec : $(c_objs)
-	@echo Link to $@
+# Compile srcs
+objs/%.o : src/%.c $(h_files)
+	@echo [INFO]: Compile $< to $@
+	@mkdir -p $(dir $@)
+	@gcc -c $< -o $@ $(compile_options)
+
+
+workspace/$(TARGET).exe : objs/$(TARGET).o $(c_objs)
+	@echo [INFO]: Linking $^ to $@
 	@mkdir -p $(dir $@)
 	@gcc $^ -o $@ $(linking_options)
 
-run : workspace/exec
+run : workspace/$(TARGET).exe
 	@./$<
 
+
 debug :
-	@echo ${c_srcs}
-	@echo $(c_objs)
+	@echo $(c_srcs)
 
 clean :
-	@rm -rf objs/* workspace/exec
+	@rm -rf objs lib workspace/*.exe
 
-
-.PHONY : debug run clean
-
+.PHONY : debug clean run

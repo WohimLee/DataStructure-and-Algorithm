@@ -1,39 +1,38 @@
-#include "4_SqQueue.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "Queue-Sequence.h"
 
-Status printQueue(SqQueue Q)
+void printQueue(SqQueue Queue)
 {
-    if (!&Q || !Q.base)
-    {
+    if (!&Queue || !Queue.base){
         printf("[WARNING]: QUEUE NOT EXIST!\n");
         return ERROR;
     }
 
-    if (Q.front == Q.rear)
-    {
+    if (Queue.front == Queue.rear){
         printf("[WARNING]: EMPTY QUEUE!\n");
         return ERROR;
     }
 
-    QElemType move = Q.front;
-    while (move != Q.rear)
-    {
-        printf("%d ", Q.base[move]);
-        move++;
-    }
+    int index = Queue.front;
+    while(index != Queue.rear)
+        printf("%d ", Queue.base[index++]);
     printf("\n");
     return OK;
 }
 
 
-// (1) 初始化
-Status initQueue(SqQueue *pQ)
+// 1. Initialization
+void initQueue(SqQueue *pQueue)
 {
-    if (!pQ)
-        return ERROR;
-    pQ->base = (QElemType*)malloc(sizeof(QElemType)*MAXQSIZE);
+
+    pQueue->base = (ElemType*)malloc(sizeof(ElemType)*MAXQSIZE);
+        if (!pQueue){
+        printf("Initialize Queue Failed!\n");
+        return;
+    }
     if (!pQ->base)
         exit(OVERFLOW);
     

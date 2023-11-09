@@ -1,35 +1,41 @@
-
-
-
-#include "Utils.h"
-
-int main(int argc, char** argv)
+void depthFirstSearch(Building* pBuilding, int startStateIdx)
 {
-    char buffer[BUFFER_SIZE];
-    FILE *file;
-    CSVRow row;
-
-    file = fopen("./workspace/adjacencyList.csv", "r");
-    if (!file) {
-        perror("Unable to open the file.");
-        return EXIT_FAILURE;
+    int totalRooms = pBuilding->nNodeNum;
+    for(int i = 0; i < totalRooms; i++){
+        Distance[i] = 999;
+        RoomFrom[i] = -1;
+        visited[i] = false;
     }
+    
+    Distance[startStateIdx] = 0;
+    visited[startStateIdx] = true;
 
-    while (fgets(buffer, BUFFER_SIZE, file)) {
-        // Remove trailing newline
-        buffer[strcspn(buffer, "\n\r")] = 0;
-        
-        processCSVRow(buffer, &row);
+    Stack stack;
+    stackInit(&stack);
+    stackPush(&stack, startStateIdx);
 
-        // Do something with the CSV row here...
-        printf("Index: %d\nRoom Type: %s\nDescription: %s\nConnections: ",
-               row.idx, row.roomType, row.description);
-        for (int i = 0; i < row.arcCount; i++) {
-            printf("%d ", row.arcs[i]);
+    while(!stackEmpty(stack)){
+        ElemType roomIdx = stackPop(&stack);
+        printf("\nPop the top element: %d, HOOVI is now at %s\n", 
+            roomIdx, pBuilding->pRoomList[roomIdx].sState);
+        printf("——————————————————————————————————————————————\n");
+
+        // The first ArcNode of each Room
+        Action* pCurArc = pBuilding->pRoomList[roomIdx].pFirstEdge;
+        // Travel the ArcNode list of the Room
+        while(pCurArc){
+            int curVisitRoomIdx = pCurArc->adjNodeIdx;
+            if(!visited[curVisitRoomIdx]){
+                RoomFrom[curVisitRoomIdx] = roomIdx;
+                Distance[curVisitRoomIdx] = Distance[roomIdx] + 1;
+                visited[curVisitRoomIdx] = true;
+
+                stackPush(&stack, curVisitRoomIdx);
+
+                // sleep(1);
+            }
+            pCurArc = pCurArc->pNextEdge;
         }
-        printf("\n\n");
     }
-    fclose(file);
-    return EXIT_SUCCESS;
+    // Debugging code to display the results can be re-enabled if necessary
 }
-

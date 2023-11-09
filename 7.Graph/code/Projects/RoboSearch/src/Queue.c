@@ -10,7 +10,7 @@ void queuePrint(Queue Queue) {
         printf("Queue is empty!\n");
         return;
     }
-    printf("Queue contains: ");
+    printf("Queue remains: ");
     for (int i = Queue.front; i <= Queue.rear; i++) {
         printf("%d ", Queue.data[i]);
     }
@@ -52,7 +52,7 @@ void queuePush(Queue *pQueue, ElemType elem)
     }
     pQueue->rear++;
     pQueue->data[pQueue->rear] = elem;
-    printf("\nPush Room %d in queue\n", elem);
+    // printf("\nPush %d in queue\n", elem);
     return;
 }
 
@@ -68,7 +68,6 @@ ElemType queuePop(Queue *pQueue) {
     // if (pQueue->front >= QUEUE_MAX_SIZE) { // Assuming QUEUE_MAX_SIZE is the size of the queue
     //     pQueue->front = 0;
     // }
-    printf("\nPop the head element: %d\n", elem);
     return elem;
 }
 

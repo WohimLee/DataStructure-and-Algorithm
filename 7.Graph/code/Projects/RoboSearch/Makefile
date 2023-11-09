@@ -4,9 +4,9 @@ MAIN := Examples/main.c
 TARGET := $(notdir $(basename $(MAIN)))
 
 
-h_files := include/BuildingAL.h \
-		   include/Utils.h \
-		   include/OptimumRouteAlgorithm.h \
+h_files := include/State-Environment.h \
+		   include/System.h \
+		   include/BFS-DFS.h \
 		   include/Queue.h \
 		   include/Stack.h
 

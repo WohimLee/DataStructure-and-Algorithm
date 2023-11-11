@@ -11,7 +11,7 @@ int RoomFrom[MAX_ROOM_NUM];
 bool visited[MAX_ROOM_NUM];
 
 
-void breadthFirstSearch(Building* pBuilding, int startStateIdx)
+void breadthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
 {
     
     int totalRooms = pBuilding->nNodeNum;
@@ -27,44 +27,59 @@ void breadthFirstSearch(Building* pBuilding, int startStateIdx)
     Queue queue;
     queueInit(&queue);
     queuePush(&queue, startStateIdx);
-    queuePrint(queue);
+    if(verbose){
+        printf("\nPush %d in queue\n", startStateIdx);
+        queuePrint(queue);
+    }
+    
 
     while(!queueEmpty(queue)){
         ElemType popRoomIdx = queuePop(&queue);
-        printf("\nPop the head element: %d,  ", popRoomIdx);
-        displayCurrentLocation(pBuilding, popRoomIdx);
-        printf("——————————————————————————————————————————————\n");
+
+        if(verbose){
+            printf("\nPop the head element: %d,  ", popRoomIdx);
+            displayCurrentLocation(pBuilding, popRoomIdx);
+            printf("——————————————————————————————————————————————\n");
+            queuePrint(queue);
+        }
         
-        queuePrint(queue);
+        if(popRoomIdx == 78)
+            break;
         // The first ArcNode of each Room
         Action* pCurArc = pBuilding->pRoomList[popRoomIdx].pFirstEdge;
         // Travel the ArcNode list of the Room
         while(pCurArc){
-            int curVisitRoomIdx = pCurArc->adjNodeIdx;
+            int curVisitRoomIdx = pCurArc->nAdjNodeIdx;
             if(!visited[curVisitRoomIdx]){
                 RoomFrom[curVisitRoomIdx] = popRoomIdx;
                 Distance[curVisitRoomIdx] = Distance[popRoomIdx]+1;
                 visited[curVisitRoomIdx]  = true;
 
                 queuePush(&queue, curVisitRoomIdx);
-                printf("\nPush %d in queue\n", curVisitRoomIdx);
-                queuePrint(queue);
 
+                if(verbose){
+                    printf("\nPush %d in queue\n", curVisitRoomIdx);
+                    queuePrint(queue);
+                }
                 // sleep(1);
             }
             pCurArc = pCurArc->pNextEdge;
         }
     }
-    // int chargerIdx = getRoomIdx(pBuilding, "Charger");
-    // for(int i=0; i<totalRooms; i++)
-    //     printf("visited[%d]: %s, Distance[%d]: %d, RoomFrom[%d]: %d\n", 
-    //         i, visited[i] == true ? "true" : "false", 
-    //         i, Distance[i], 
-    //         i, RoomFrom[i]);
+    if(verbose){
+        printf("Checking informations:\n\n");
+        int chargerIdx = getRoomIdx(pBuilding, "Charger");
+        for(int i=0; i<totalRooms; i++)
+            printf("visited[%d]: %s, Distance[%d]: %d, RoomFrom[%d]: %d\n", 
+                i, visited[i] == true ? "true" : "false", 
+                i, Distance[i], 
+                i, RoomFrom[i]);
+    }
+    
 }
 
 
-void depthFirstSearch(Building* pBuilding, int startStateIdx)
+void depthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
 {
     int totalRooms = pBuilding->nNodeNum;
     for(int i=0; i<totalRooms; i++){
@@ -77,31 +92,41 @@ void depthFirstSearch(Building* pBuilding, int startStateIdx)
 
     Stack* pStack = stackInit();
     stackPush(pStack, startStateIdx);
-    stackPrint(*pStack);
+
+    if(verbose){
+        printf("\nPush %d in stack\n", startStateIdx);
+        stackPrint(*pStack);
+    }
+    
+
 
     while(!stackEmpty(*pStack))
     {
         ElemType popRoomIdx = stackPop(pStack);
-        printf("\nPop the top element: %d, ", 
-            popRoomIdx);
-        displayCurrentLocation(pBuilding, popRoomIdx);
-        printf("——————————————————————————————————————————————\n");
-        stackPrint(*pStack);
 
+        if(verbose){
+            printf("\nPop the top element: %d, ", 
+            popRoomIdx);
+            displayCurrentLocation(pBuilding, popRoomIdx);
+            printf("——————————————————————————————————————————————\n");
+            stackPrint(*pStack);
+        }
+        
         Action* pCurArc = pBuilding->pRoomList[popRoomIdx].pFirstEdge;
         while(pCurArc)
         {
-            int curVisitRoomIdx = pCurArc->adjNodeIdx;
+            int curVisitRoomIdx = pCurArc->nAdjNodeIdx;
             if(!visited[curVisitRoomIdx]){
                 RoomFrom[curVisitRoomIdx] = popRoomIdx;
                 Distance[curVisitRoomIdx] = Distance[popRoomIdx]+1;
                 visited[curVisitRoomIdx]  = true;
 
                 stackPush(pStack, curVisitRoomIdx);
-                printf("\nPush %d in stack\n", curVisitRoomIdx);
-
-                stackPrint(*pStack);
-
+                
+                if(verbose){
+                    printf("\nPush %d in stack\n", curVisitRoomIdx);
+                    stackPrint(*pStack);
+                }
                 // sleep(1);
             }
             pCurArc = pCurArc->pNextEdge;
@@ -119,7 +144,7 @@ void tracePathBack(Building* pBuilding, int startRoomIdx)
 {
     int chargerIdx = getRoomIdx(pBuilding, "Charger");
     int minDis = Distance[chargerIdx];
-    printf("\n\nFrom Room %s to %s Room: \n", 
+    printf("From Room %s to %s Room: \n", 
         pBuilding->pRoomList[startRoomIdx].sState,
         pBuilding->pRoomList[chargerIdx].sState);
     printf("————————————————————————————————\n");
@@ -129,16 +154,15 @@ void tracePathBack(Building* pBuilding, int startRoomIdx)
     Stack* pStack = stackInit();
     stackPush(pStack, chargerIdx);
     int roomFromIdx = RoomFrom[chargerIdx];
-    // stackPush(pStack, roomFromIdx);
 
     while(roomFromIdx != -1){
         stackPush(pStack, roomFromIdx);
         roomFromIdx = RoomFrom[roomFromIdx];
 
     }
-    
+
     int size = stackSize(*pStack);
     for(int i=0; i<size-1; i++)
-        printf("%d -> ", stackPop(pStack));
-    printf("%d\n\n", stackPop(pStack));
+        printf("%s -> ", pBuilding->pRoomList[stackPop(pStack)].sState);
+    printf("%s\n\n", pBuilding->pRoomList[stackPop(pStack)].sState);
 }

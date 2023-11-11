@@ -14,18 +14,18 @@
 
 typedef struct Edge
 {
-    int adjNodeIdx; 
-    struct Edge* pNextEdge;
+    int nAdjNodeIdx;         // Index of the adjacent node
+    struct Edge* pNextEdge; // Pointer to the next edge
 }Action;
 
 typedef struct Node
 {
-    int nNodeIdx;
-    int nEdgeNum;
-    int aEdges[16];
-    Action* pFirstEdge;
-    char sRoomType[16];
-    char sState[8];
+    int nNodeIdx;       // Node index
+    int nEdgeNum;       // Number of edges
+    int aEdges[16];     // Array of edges (by index)
+    Action* pFirstEdge; // Pointer to the first edge in a linked list of edges
+    char sRoomType[16]; // Type of the room (as a string)
+    char sState[8];     // State of the node (as a string)
 }Room, RoomList[MAX_ROOM_NUM];
 
 
@@ -36,7 +36,7 @@ typedef struct ALGraph
 }Building;
 
 // 1. Initialize the environment
-Building* initializeBuilding();
+Building* initializeBuilding(bool verbose);
 
 // 2. Read building configurations from as .csv file
 void processCSVRow(char* line, Building* pBuilding, int vexIdx);
@@ -44,16 +44,14 @@ void processCSVRow(char* line, Building* pBuilding, int vexIdx);
 // 3. Initialize the first edge of a node
 Action* initFirstEdge(int adjVexIdx);
 
-// 4.
-void insertEdge(Action* pFirstArc, int arcIdx, int tokenVexIdx);
+// 4. Insert an edge to the first edge of a node
+void insertEdge(Action* pFirstEdge, int arcIdx, int tokenVexIdx);
 
-
-// 
+// 5. Get the room index of the room list
 int getRoomIdx(Building* pBuilding, const char* sDescription);
-// 
-void findNextRooms(Room* pState);
 
-
+// 6. Successor function to print the adjacent rooms HOOVI can move to from its current position
+void findNextRooms(Room* pRoom);
 
 
 #endif // BUILDING_ENVRIONMENT_H

@@ -7,11 +7,14 @@
 bool visitied[MAX_ROOM_NUM];
 
 // 1. BFS algorithm
-void breadthFirstSearch(Building* pBuilding, int startStateIdx);
+void breadthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose);
+
 // 2. DFS algorithm
-void depthFirstSearch(Building* pBuilding, int startStateIdx);
+void depthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose);
+
 // 3. Display current locate of HOOVI
 void displayCurrentLocation(Building* pBuilding, int popRoomIdx);
+
 // 4. Track back the path from the charger to the robot's
 //    and print the path from starting point to charger
 void tracePathBack(Building* pBuilding, int startRoomIdx);

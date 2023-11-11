@@ -12,16 +12,15 @@ void welcomeInformation()
     printf("| | /| / / _ \\/ / ___/ __ \\/ __ `__ \\/ _ \\/ / \n");
     printf("| |/ |/ /  __/ / /__/ /_/ / / / / / /  __/_/  \n");
     printf("|__/|__/\\___/_/\\___/\\____/_/ /_/ /_/\\___(_)   \n\n\n");
-    printf("%48s\n", "By Heqian.Li No.23021010140");
     printf("—————————————————————————————————————————————————\n\n");
     printf("Press \"Enter\" to continue...\n\n");
     getchar();
 }
 
 
-void messagePrint(Building* pBuilding)
+void inputMessage(Building* pBuilding)
 {
-    printf("Enter a room where you wanna place HOOVI? Choose one of the following descriptions: \n\n");
+    printf("Now enter HOOVI's initial state. Choose one of the following descriptions: \n\n");
     int floor = 0;
     int i = 0; // Index for the array
 
@@ -58,7 +57,7 @@ void messagePrint(Building* pBuilding)
 int initializeState(Building* pBuilding)
 {
     char sStartRoom[8]; // Declare a char array of sufficient size
-    messagePrint(pBuilding);
+    inputMessage(pBuilding);
     printf("Enter the initial state to start from (e.g. C3.2) : ");
 
     scanf("%7s", sStartRoom); // Read a string from the user into the array
@@ -89,3 +88,42 @@ int initializeState(Building* pBuilding)
     return startRoomIdx;
 }
 
+void goalTest(Building* pBuilding, bool verbose)
+{
+    int startRoomIdx;
+
+    printf("Starting goal test, using BFS algorithm...\n\n");
+
+    printf("\n\n\n\n\n\nGoal Test 1: start from room N3.2\n");
+    printf("—————————————————————————————————\n\n");
+    printf("%6s\"N3.2 -> Charger\"\n", "");
+    startRoomIdx = getRoomIdx(pBuilding, "N3.2");
+    breadthFirstSearch(pBuilding, startRoomIdx, verbose);
+    
+    printf("\n\n| Goal Test 1: ");
+    tracePathBack(pBuilding, startRoomIdx);
+    printf("Press \"Enter\" to continue...\n\n");
+    getchar();
+
+    printf("\n\n\n\n\n\nGoal Test 2: start from the lift on the 1st floor\n");
+    printf("———————————————————————————————————————————————\n\n");
+    printf("%6s\"Lift-2 -> Charger\"\n", "");
+    startRoomIdx = getRoomIdx(pBuilding, "Lift-2");
+    breadthFirstSearch(pBuilding, startRoomIdx, verbose);
+    
+    printf("\n\n| Goal Test 2: ");
+    tracePathBack(pBuilding, startRoomIdx);
+    printf("Press \"Enter\" to continue...\n\n");
+    getchar();
+
+    printf("\n\n\n\n\n\nGoal Test 3: start from the room K1.1\n");
+    printf("—————————————————————————————————————————\n\n");
+    printf("%6s\"K1.1 -> Charger\"\n", "");
+    startRoomIdx = getRoomIdx(pBuilding, "K1.1");
+    breadthFirstSearch(pBuilding, startRoomIdx, verbose);
+    
+    printf("\n\n| Goal Test 3: ");
+    tracePathBack(pBuilding, startRoomIdx);
+    printf("Press \"Enter\" to continue...\n\n");
+    getchar();
+}

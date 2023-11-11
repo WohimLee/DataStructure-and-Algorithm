@@ -2,8 +2,8 @@
 #include "State-Environment.h"
 
 
-
-Building* initializeBuilding()
+// 1. Initialize the environment
+Building* initializeBuilding(bool verbose)
 {
     Building* pBuilding = (Building*)malloc(sizeof(Building));
     if(!pBuilding){
@@ -24,36 +24,31 @@ Building* initializeBuilding()
     while(fgets(buffer, BUFFER_SIZE, file)){
         buffer[strcspn(buffer, "\n\r")] = 0; // confirm the effective conntents
         processCSVRow(buffer, pBuilding, NodeIdx);
-        printf("RoomIdx: %d, RoomType: %s\n%2s| State: %s\n",
+        if(verbose){
+            printf("RoomIdx: %d, RoomType: %s\n%2s| State: %s\n",
                pBuilding->pRoomList[NodeIdx].nNodeIdx, 
                pBuilding->pRoomList[NodeIdx].sRoomType,
                "",
                pBuilding->pRoomList[NodeIdx].sState
                );
-        // printArcList(&pBuilding->pRoomList[NodeIdx]);
-        Action* pCurArc = pBuilding->pRoomList[NodeIdx].pFirstEdge;
-        printf("%2s| Actions: ", "");
-        while(pCurArc)
-        {
-            printf("%d ", pCurArc->adjNodeIdx);
-            pCurArc = pCurArc->pNextEdge;
+            printf("%2s| Actions: ", "");
+            findNextRooms(&(pBuilding->pRoomList[NodeIdx]));
         }
-
-        printf("\n\n");
         NodeIdx++;
     }
     fclose(file);
     pBuilding->nNodeNum = NodeIdx;
 
-    printf("Initialized Building (Adjacency List Graph) Complete!\n");
+    printf("\n\nInitialized Building (Adjacency List Graph) Complete!\n");
     printf("—————————————————————————————————————————————————————\n\n");
-    printf("Press \"Enter\" to continue...\n\n");
+    printf("Press \"Enter\" to start the goal test...\n\n");
+    getchar();
     getchar();
 
     return pBuilding;
 }
 
-
+// 2. Read building configurations from as .csv file
 void processCSVRow(char* line, Building* pBuilding, int vexIdx)
 {
     char* token;
@@ -89,25 +84,25 @@ void processCSVRow(char* line, Building* pBuilding, int vexIdx)
     pBuilding->pRoomList[vexIdx].nEdgeNum = arcIdx;
 }
 
-
-Action* initFirstEdge(int adjNodeIdx)
+// 3. Initialize the first edge of a node
+Action* initFirstEdge(int nAdjNodeIdx)
 {
     Action* pFirstEdge = (Action*)malloc(sizeof(Action));
     if(!pFirstEdge)
         printf("Init ArcList Failed!\n");
-    pFirstEdge->adjNodeIdx = adjNodeIdx;
+    pFirstEdge->nAdjNodeIdx = nAdjNodeIdx;
     pFirstEdge->pNextEdge = NULL;
     return pFirstEdge;
 }
 
-
+// 4. Insert an edge to the first edge of a node
 void insertEdge(Action* pFirstEdge, int arcIdx, int tokenNodeIdx)
 {
     // if(arcIdx < 1)
     //     return;
     if(arcIdx == 1){
         Action* pTemp = (Action*)malloc(sizeof(Action));
-        pTemp->adjNodeIdx = tokenNodeIdx;
+        pTemp->nAdjNodeIdx = tokenNodeIdx;
         pTemp->pNextEdge = pFirstEdge->pNextEdge;
         pFirstEdge->pNextEdge = pTemp;
         return;
@@ -124,27 +119,13 @@ void insertEdge(Action* pFirstEdge, int arcIdx, int tokenNodeIdx)
         return;
     }
     Action* pTemp = (Action*)malloc(sizeof(Action));
-    pTemp->adjNodeIdx = tokenNodeIdx;
+    pTemp->nAdjNodeIdx = tokenNodeIdx;
     pTemp->pNextEdge = pCurArc->pNextEdge;
     pCurArc->pNextEdge = pTemp;
 }
 
 
-
-void findNextRooms(Room* pState)
-{
-    Action* pCurArc = pState->pFirstEdge;
-    printf("Arcs: ");
-    while(pCurArc)
-    {
-        printf("%d ", pCurArc->adjNodeIdx);
-        pCurArc = pCurArc->pNextEdge;
-    }
-    printf("\n");
-}
-
-
-
+// 5. Get the room index of the room list
 int getRoomIdx(Building* pBuilding, const char* sState)
 {
     for(int i=0; i<MAX_ROOM_NUM; i++){
@@ -154,5 +135,18 @@ int getRoomIdx(Building* pBuilding, const char* sState)
     }
     return -1;
 }
+
+// 6. Successor function to print the adjacent rooms HOOVI can move to from its current position
+void findNextRooms(Room* pRoom)
+{
+    Action* pCurArc = pRoom->pFirstEdge;
+    while(pCurArc)
+    {
+        printf("%d ", pCurArc->nAdjNodeIdx);
+        pCurArc = pCurArc->pNextEdge;
+    }
+    printf("\n\n");
+}
+
 
 

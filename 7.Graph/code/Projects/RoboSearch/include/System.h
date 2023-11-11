@@ -11,10 +11,11 @@
 
 void welcomeInformation();
 
-
 int initializeState(Building* Building);
 
-void messagePrint(Building* pBuilding);
+void inputMessage(Building* pBuilding);
+
+void goalTest(Building* pBuilding, bool verbose);
 
 
 #endif // SYSTEM_H

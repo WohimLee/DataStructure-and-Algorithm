@@ -41,13 +41,15 @@ void breadthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
             displayCurrentLocation(pBuilding, popRoomIdx);
             printf("——————————————————————————————————————————————\n");
             queuePrint(queue);
+            sleep(1); // you can comment this line if you want
         }
         
         if(popRoomIdx == 78)
             break;
         // The first ArcNode of each Room
         Action* pCurArc = pBuilding->pRoomList[popRoomIdx].pFirstEdge;
-        // Travel the ArcNode list of the Room
+        // Traverse the ArcNode list of the Room
+        // Push all the possible actions in the queue
         while(pCurArc){
             int curVisitRoomIdx = pCurArc->nAdjNodeIdx;
             if(!visited[curVisitRoomIdx]){
@@ -60,14 +62,14 @@ void breadthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
                 if(verbose){
                     printf("\nPush %d in queue\n", curVisitRoomIdx);
                     queuePrint(queue);
+                    // sleep(1); // you can comment this line if you want
                 }
-                // sleep(1);
             }
             pCurArc = pCurArc->pNextEdge;
         }
     }
     if(verbose){
-        printf("Checking informations:\n\n");
+        printf("\n\nChecking informations:\n\n");
         int chargerIdx = getRoomIdx(pBuilding, "Charger");
         for(int i=0; i<totalRooms; i++)
             printf("visited[%d]: %s, Distance[%d]: %d, RoomFrom[%d]: %d\n", 
@@ -96,10 +98,9 @@ void depthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
     if(verbose){
         printf("\nPush %d in stack\n", startStateIdx);
         stackPrint(*pStack);
+        sleep(1); // you can comment this line if you want
     }
     
-
-
     while(!stackEmpty(*pStack))
     {
         ElemType popRoomIdx = stackPop(pStack);
@@ -110,7 +111,10 @@ void depthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
             displayCurrentLocation(pBuilding, popRoomIdx);
             printf("——————————————————————————————————————————————\n");
             stackPrint(*pStack);
+            sleep(1); // you can comment this line if you want
         }
+        if(popRoomIdx == 78)
+            break;
         
         Action* pCurArc = pBuilding->pRoomList[popRoomIdx].pFirstEdge;
         while(pCurArc)
@@ -126,8 +130,8 @@ void depthFirstSearch(Building* pBuilding, int startStateIdx, bool verbose)
                 if(verbose){
                     printf("\nPush %d in stack\n", curVisitRoomIdx);
                     stackPrint(*pStack);
+                    // sleep(1); // you can comment this line if you want
                 }
-                // sleep(1);
             }
             pCurArc = pCurArc->pNextEdge;
         }

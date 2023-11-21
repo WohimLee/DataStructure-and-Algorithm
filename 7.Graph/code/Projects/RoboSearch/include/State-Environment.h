@@ -8,7 +8,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-
 #define MAX_ROOM_NUM 100
 #define BUFFER_SIZE 64 // Adjust as necessary for the longest line
 

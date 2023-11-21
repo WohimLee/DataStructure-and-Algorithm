@@ -1,6 +1,4 @@
-
 #include "State-Environment.h"
-
 
 // 1. Initialize the environment
 Building* initializeBuilding(bool verbose)
